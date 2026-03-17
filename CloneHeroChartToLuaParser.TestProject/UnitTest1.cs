@@ -147,13 +147,14 @@ namespace CloneHeroChartToLuaParser.TestProject
         {
             const string OUTPUT_PATH = "ParsedChart.lua";
 
-            var chart = Parser.ToChart(FILE_PATH);
-            Parser.ToLuaTable(chart, OUTPUT_PATH);
-
             if (File.Exists(OUTPUT_PATH))
             {
                 File.Delete(OUTPUT_PATH);
             }
+
+            var chart = Parser.ToChart(FILE_PATH);
+            Parser.ToLuaTable(chart, OUTPUT_PATH);
+
             
             var fileContent = File.ReadAllText(OUTPUT_PATH);
             fileContent.Should().NotBeNullOrEmpty();
