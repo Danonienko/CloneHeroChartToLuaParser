@@ -127,7 +127,6 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
             return notes;
         }
 
-
         public static Chart ToChart(string pathToChartFile)
         {
             var fileContents = File.ReadAllText(pathToChartFile);
@@ -171,7 +170,6 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
             if (outputFilePathExtention != ".lua")
             {
                 outputPath = Path.ChangeExtension(outputPath, ".lua");
-
             }
 
             File.WriteAllText(outputPath, luaTable);
