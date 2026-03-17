@@ -134,7 +134,7 @@ namespace CloneHeroChartToLuaParser.TestProject
         [Test]
         public void ChartShouldBeParsedCorrectly()
         {
-            var chart = Parser.ToChart(FILE_PATH);
+            Chart chart = Parser.ToChart(FILE_PATH);
             chart.Should().NotBeNull();
             chart.Song.Should().NotBeNull();
             chart.SyncTracks.Should().NotBeNullOrEmpty();
@@ -143,22 +143,23 @@ namespace CloneHeroChartToLuaParser.TestProject
         }
 
         [Test]
-        public void ParserShouldSerializeCorrectlyAndExportToLuaFile()
+        public void ParserShouldSerializeCorrectly()
         {
-            const string OUTPUT_PATH = "ParsedChart.lua";
+            Chart chart = Parser.ToChart(FILE_PATH);
 
-            if (File.Exists(OUTPUT_PATH))
-            {
-                File.Delete(OUTPUT_PATH);
-            }
+            string luaTable = Parser.ToLuaTable(chart);
+            luaTable.Should().NotBeNullOrEmpty();
+            luaTable.Should().Contain("Song");
+        }
 
-            var chart = Parser.ToChart(FILE_PATH);
-            Parser.ToLuaTable(chart, OUTPUT_PATH);
+        [Test]
+        public void ParserShouldExportCorrectly()
+        {
+            string outputPath = "output.lua";
 
-            
-            var fileContent = File.ReadAllText(OUTPUT_PATH);
-            fileContent.Should().NotBeNullOrEmpty();
-            fileContent.Should().Contain("Song");
+            if (File.Exists(outputPath)) File.Delete(outputPath);
+            Parser.Parse(FILE_PATH, outputPath);
+            File.Exists(outputPath).Should().BeTrue();
         }
     }
 }
