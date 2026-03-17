@@ -5,7 +5,7 @@ namespace CloneHeroChartToLuaParser.TestProject
 {
     public class ParserTests
     {
-        public const string FILE_PATH = @"C:\Users\Daniel\Documents\Beast and the Harlot.msce";
+        public const string FILE_PATH = "Beast and the Harlot.msce";
 
         public readonly string fileContent = File.ReadAllText(FILE_PATH);
 
