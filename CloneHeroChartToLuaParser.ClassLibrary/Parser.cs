@@ -144,13 +144,32 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
             return chart;
         }
 
-        public static void ToLuaTable(Chart chart, string outputPath)
+        public static string ToLuaTable(Chart chart)
         {
-            string luaContent = "return " + LuaSerializer.Serialize(chart);
+            return "return " + LuaSerializer.Serialize(chart);
+        }
 
-            File.WriteAllText(outputPath, luaContent);
+        public static void Parse(string pathToChartFile, string outputPath)
+        {
+            Chart chart = ToChart(pathToChartFile);
+            string luaTable = ToLuaTable(chart);
+            string outputFilePathExtention = Path.GetExtension(outputPath);
 
-            Console.WriteLine($"Chart successfully parsed and exported to {outputPath}");
+            if (string.IsNullOrEmpty(outputFilePathExtention))
+            {
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathToChartFile);
+                outputPath = Path.Combine(outputPath, fileNameWithoutExtension + ".lua");
+                File.WriteAllText(outputPath, luaTable);
+            }
+
+            if (outputFilePathExtention != ".lua")
+            {
+                outputPath = Path.ChangeExtension(outputPath, ".lua");
+
+            }
+
+            File.WriteAllText(outputPath, luaTable);
+            Console.WriteLine("Successfully parsed chart into Lua table");
         }
     }
 }
