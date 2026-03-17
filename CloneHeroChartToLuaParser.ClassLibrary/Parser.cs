@@ -31,8 +31,8 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
                 Difficulty = int.Parse(keyValuePairs["Difficulty"]),
                 PreviewStart = int.Parse(keyValuePairs["PreviewStart"]),
                 PreviewEnd = int.Parse(keyValuePairs["PreviewEnd"]),
-                Genre = keyValuePairs["Genre"],
-                MediaType = keyValuePairs["MediaType"],
+                Genre = keyValuePairs["Genre"].Replace("\"", string.Empty),
+                MediaType = keyValuePairs["MediaType"].Replace("\"", string.Empty),
             };
 
             return song;
@@ -40,56 +40,40 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
 
         public static List<SyncTrack> ReadSyncTracks(string data)
         {
-            Dictionary<int, (string, int)> keyValuePairs = [];
             List<Match> matches = Regex.Matches(data, _MATCH_KEY_VALUE_FOR_SYNC_TRACK_SECTION_PATTERN).ToList();
 
-            matches.ForEach(match =>
-            {
-                var tick = int.Parse(match.Groups["Tick"].Value);
-                var type = match.Groups["Type"].Value;
-                var value = int.Parse(match.Groups["Value"].Value);
-                keyValuePairs.Add(tick, (type, value));
-            });
-
             List<SyncTrack> syncTracks = [];
-            foreach (var item in keyValuePairs)
+            matches.ForEach(match =>
             {
                 SyncTrack track = new()
                 {
-                    Tick = item.Key,
-                    Type = item.Value.Item1,
-                    Value = item.Value.Item2,
+                    Tick = int.Parse(match.Groups["Tick"].Value),
+                    Type = match.Groups["Type"].Value,
+                    Value = int.Parse(match.Groups["Value"].Value)
                 };
 
                 syncTracks.Add(track);
-            }
+            });
 
             return syncTracks;
         }
 
         public static List<Event> ReadEvents(string data)
         {
-            Dictionary<int, (string, string)> keyValuePairs = [];
             List<Match> matches = Regex.Matches(data, _MATCH_KEY_VALUE_FOR_EVENTS_SECTION_PATTERN).ToList();
 
+            List<Event> events = [];
             matches.ForEach(match =>
             {
-                var tick = int.Parse(match.Groups["Tick"].Value);
-                var type = match.Groups["Type"].Value;
-                var value = match.Groups["Value"].Value;
-                keyValuePairs.Add(tick, (type, value));
-            });
-
-            List<Event> events = [];
-            foreach (var item in keyValuePairs)
-            {
-                Event ev = new()
+                Event @event = new()
                 {
-                    Tick = item.Key,
-                    Type = item.Value.Item1,
-                    Value = item.Value.Item2,
+                    Tick = int.Parse(match.Groups["Tick"].Value),
+                    Type = match.Groups["Type"].Value,
+                    Value = match.Groups["Value"].Value.Replace("\"", string.Empty)
                 };
-            }
+
+                events.Add(@event);
+            });
 
             return events;
         }
