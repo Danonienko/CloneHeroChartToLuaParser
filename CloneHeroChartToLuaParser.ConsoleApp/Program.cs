@@ -15,20 +15,6 @@ namespace CloneHeroChartToLuaParser.ConsoleApp
             string pathToChartFile = args[0];
             string outputPath = args[1];
 
-            if (!File.Exists(pathToChartFile))
-            {
-                Console.WriteLine($"Error: File '{pathToChartFile}' does not exist.");
-                return;
-            }
-
-            string extention = Path.GetExtension(pathToChartFile).ToLower();
-
-            if (extention != ".chart" || extention != ".msce")
-            {
-                Console.WriteLine($"Error: Unsupported file type '{extention}'. Please provide a .chart or .msce file.");
-                return;
-            }
-
             try
             {
                 Parser.Parse(pathToChartFile, outputPath);

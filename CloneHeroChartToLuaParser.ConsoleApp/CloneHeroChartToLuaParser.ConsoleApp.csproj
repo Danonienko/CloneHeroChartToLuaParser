@@ -5,6 +5,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyTitle>CloneHeroChartToLuaParser</AssemblyTitle>
+    <AssemblyName>CloneHeroChartToLuaParser</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

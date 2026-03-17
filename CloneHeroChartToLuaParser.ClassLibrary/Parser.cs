@@ -151,6 +151,12 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
 
         public static void Parse(string pathToChartFile, string outputPath)
         {
+            if (!File.Exists(pathToChartFile))
+            {
+                Console.WriteLine("The specified chart file does not exist.");
+                return;
+            }
+
             Chart chart = ToChart(pathToChartFile);
             string luaTable = ToLuaTable(chart);
             string outputFilePathExtention = Path.GetExtension(outputPath);
