@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="CloneHeroChartToLuaParser.ClassLibrary/CloneHeroChartToLuaParser.ClassLibrary.csproj" />
+  <Project Path="CloneHeroChartToLuaParser.TestProject/CloneHeroChartToLuaParser.TestProject.csproj" Id="ea891657-1dd5-4714-8569-12e772bf2068" />
 </Solution>

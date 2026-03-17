@@ -5,13 +5,13 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
 {
     public static class Parser
     {
-        private const string _MATCH_SECTIONS_PATTERN = @"(?<Section>\[\w*\])\s(?<Data>{[\s\S]*?})";
+        private const string _MATCH_SECTIONS_PATTERN = @"(?<Section>\[\w*\])\s+(?<Data>{[\s\S]*?})";
         private const string _MATCH_KEY_VALUE_FOR_SONG_SECTION_PATTERN = @"(?<Key>\S+)\s=\s(?<Value>\S+)";
         private const string _MATCH_KEY_VALUE_FOR_SYNC_TRACK_SECTION_PATTERN = @"(?<Tick>\d+)\s=\s(?<Type>\w+)\s(?<Value>\d+)";
         private const string _MATCH_KEY_VALUE_FOR_EVENTS_SECTION_PATTERN = @"(?<Tick>\d+)\s=\s(?<Type>\w+)\s(?<Value>"".+?"")";
         private const string _MATCH_KEY_VALUE_FOR_NOTES_PATTERN = @"(?<Note>(?<Tick>\d+)\s=\s(?<Type>\w+)\s(?<Fret>\d)\s(?<Length>\d+))|(?<Event>(?<Tick>\d+)\s=\s(?<Type>\w+)\s(?<Value>.+))";
 
-        private static Song _readSongData(string data)
+        public static Song ReadSongData(string data)
         {
             Dictionary<string, string> keyValuePairs = [];
             List<Match> matches = Regex.Matches(data, _MATCH_KEY_VALUE_FOR_SONG_SECTION_PATTERN).ToList();
@@ -38,7 +38,7 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
             return song;
         }
 
-        private static List<SyncTrack> _readSyncTracks(string data)
+        public static List<SyncTrack> ReadSyncTracks(string data)
         {
             Dictionary<int, (string, int)> keyValuePairs = [];
             List<Match> matches = Regex.Matches(data, _MATCH_KEY_VALUE_FOR_SYNC_TRACK_SECTION_PATTERN).ToList();
@@ -67,7 +67,7 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
             return syncTracks;
         }
 
-        private static List<Event> _readEvents(string data)
+        public static List<Event> ReadEvents(string data)
         {
             Dictionary<int, (string, string)> keyValuePairs = [];
             List<Match> matches = Regex.Matches(data, _MATCH_KEY_VALUE_FOR_EVENTS_SECTION_PATTERN).ToList();
@@ -94,34 +94,35 @@ namespace CloneHeroChartToLuaParser.ClassLibrary
             return events;
         }
 
-        private static List<Note> _readNotes(string data)
+        public static List<Note> ReadNotes(string data)
         {
             throw new NotImplementedException();
         }
 
-        private static Dictionary<string, string> _sortSections(List<Match> unsortedSections)
+        public static Dictionary<string, string> ReadSections(string data)
         {
-            Dictionary<string, string> sortedSections = [];
-            unsortedSections.ForEach(section =>
+            var matches = Regex.Matches(data, _MATCH_SECTIONS_PATTERN, RegexOptions.Multiline).ToList();
+            Dictionary<string, string> sections = [];
+            matches.ForEach(section =>
             {
                 var sectionName = section.Groups["Section"].Value;
                 var sectionData = section.Groups["Data"].Value;
-                sortedSections.Add(sectionName, sectionData);
+                sections.Add(sectionName, sectionData);
             });
-            return sortedSections;
+            return sections;
         }
 
         public static Chart ToChart(string pathToChartFile)
         {
             var fileContents = File.ReadAllText(pathToChartFile);
-            var sections = _sortSections(Regex.Matches(fileContents, _MATCH_SECTIONS_PATTERN).ToList());
+            var sections = ReadSections(fileContents);
 
             Chart chart = new()
             {
-                Song = _readSongData(sections["[Song]"]),
-                SyncTracks = _readSyncTracks(sections["[SyncTrack]"]),
-                Events = _readEvents(sections["[Events]"]),
-                ExpertSingle = _readNotes(sections["[ExpertSingle]"]),
+                Song = ReadSongData(sections["[Song]"]),
+                SyncTracks = ReadSyncTracks(sections["[SyncTrack]"]),
+                Events = ReadEvents(sections["[Events]"]),
+                ExpertSingle = ReadNotes(sections["[ExpertSingle]"]),
             };
 
             return chart;
