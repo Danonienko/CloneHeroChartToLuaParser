@@ -7,15 +7,15 @@
         public List<Event> Events { get; set; } = [];
 
         // Guitar
-        public List<Note> ExpertSingle { get; set; } = [];
-        public List<Note> HardSingle { get; set; } = [];
-        public List<Note> MediumSingle { get; set; } = [];
-        public List<Note> EasySingle { get; set; } = [];
+        public List<object> ExpertSingle { get; set; } = [];
+        public List<object> HardSingle { get; set; } = [];
+        public List<object> MediumSingle { get; set; } = [];
+        public List<object> EasySingle { get; set; } = [];
 
         // Bass
-        public List<Note> ExpertDoubleBass { get; set; } = [];
-        public List<Note> HardDoubleBass { get; set; } = [];
-        public List<Note> MediumDoubleBass { get; set; } = [];
-        public List<Note> EasyDoubleBass { get; set; } = [];
+        public List<object> ExpertDoubleBass { get; set; } = [];
+        public List<object> HardDoubleBass { get; set; } = [];
+        public List<object> MediumDoubleBass { get; set; } = [];
+        public List<object> EasyDoubleBass { get; set; } = [];
     }
 }

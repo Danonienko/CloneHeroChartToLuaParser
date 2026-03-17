@@ -1,4 +1,5 @@
 ﻿using CloneHeroChartToLuaParser.ClassLibrary;
+using CloneHeroChartToLuaParser.ClassLibrary.Classes;
 using FluentAssertions;
 
 namespace CloneHeroChartToLuaParser.TestProject
@@ -107,6 +108,56 @@ namespace CloneHeroChartToLuaParser.TestProject
             var sections = Parser.ReadSections(fileContent);
             var notesSection = sections["[ExpertSingle]"];
             notesSection.Should().NotBeNullOrEmpty();
+        }
+
+        [Test]
+        public void NotesDataShouldBeParsedCorrectly()
+        {
+            var sections = Parser.ReadSections(fileContent);
+            var notesSection = sections["[ExpertSingle]"];
+
+            var notesData = Parser.ReadNotes(notesSection);
+            notesData.Should().NotBeNullOrEmpty();
+
+            var eventData = (Event)notesData[0];
+            eventData.Tick.Should().Be(5520);
+            eventData.Type.Should().Be("E");
+            eventData.Value.Should().Be("intense");
+
+            var noteData = (Note)notesData[1];
+            noteData.Tick.Should().Be(5760);
+            noteData.Type.Should().Be("N");
+            noteData.Fret.Should().Be(1);
+            noteData.Length.Should().Be(0);
+        }
+
+        [Test]
+        public void ChartShouldBeParsedCorrectly()
+        {
+            var chart = Parser.ToChart(FILE_PATH);
+            chart.Should().NotBeNull();
+            chart.Song.Should().NotBeNull();
+            chart.SyncTracks.Should().NotBeNullOrEmpty();
+            chart.Events.Should().NotBeNullOrEmpty();
+            chart.ExpertSingle.Should().NotBeNullOrEmpty();
+        }
+
+        [Test]
+        public void ParserShouldSerializeCorrectlyAndExportToLuaFile()
+        {
+            const string OUTPUT_PATH = "ParsedChart.lua";
+
+            var chart = Parser.ToChart(FILE_PATH);
+            Parser.ToLuaTable(chart, OUTPUT_PATH);
+
+            if (File.Exists(OUTPUT_PATH))
+            {
+                File.Delete(OUTPUT_PATH);
+            }
+            
+            var fileContent = File.ReadAllText(OUTPUT_PATH);
+            fileContent.Should().NotBeNullOrEmpty();
+            fileContent.Should().Contain("Song");
         }
     }
 }
